@@ -2,6 +2,7 @@
 sudo: required
 dist: trusty
 language: cpp
+osx_image: xcode6.4
 
 notifications:
   email:
@@ -61,6 +62,10 @@ addons:
 #     - ninja-build
 
 before_script:
+#  - sudo add-apt-repository ppa:afrank/boost -y
+#  - sudo add-apt-repository ppa:samuel-bachmann/boost/
+#  - sudo apt-get update -q
+#  - sudo apt-get install libboost1.57-all libboost1.57-all-dev
   - mkdir build && cd build
   - cmake "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}" "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}" ..
   - cd $TRAVIS_BUILD_DIR
