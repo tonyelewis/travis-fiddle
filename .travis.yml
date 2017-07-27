@@ -1,8 +1,6 @@
-
 sudo: required
 dist: trusty
 language: cpp
-# osx_image: xcode6.4
 
 notifications:
   email:
@@ -10,7 +8,7 @@ notifications:
     on_failure: always
 
 os:
-#  - linux
+  - linux
   - osx
 
 compiler:
@@ -62,22 +60,22 @@ addons:
 #     - ninja-build
 
 before_script:
-#  - sudo add-apt-repository ppa:afrank/boost -y
-#  - sudo add-apt-repository ppa:samuel-bachmann/boost/
-#  - sudo apt-get update -q
-#  - sudo apt-get install libboost1.57-all libboost1.57-all-dev
+  - sudo add-apt-repository ppa:samuel-bachmann/boost -y
+  - sudo apt-get update -q
+  - sudo apt-get install libboost1.60-all-dev
+    # libboost1.60-all-dev libboost1.60-dev
   - mkdir build && cd build
   - cmake "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}" "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}" ..
   - cd $TRAVIS_BUILD_DIR
 
-script: make -k -C build && build/travis-fiddle
+script: make -k -C build && build/travis-fiddle && mv build/travis-fiddle build/travis-fiddle.$TRAVIS_OS_NAME
 
 deploy:
   provider: releases
   api_key:
     secure: jPE48pkwnNk+AWSKoCCP3KDaUY8oGbxqBwiFhAsB4OmRkQ9FJ5eQBnOR8jb6qoDdKjQh+B/2j21F5rDboUxoHvHfk5JOZPBVrSHwymuv7vf0Om3VUt/sew1MrLRnwH0oapAM5W+7W8yUaqapPw2LlxJOQl2co26DGwlPkqs5OdwI26mPHmEi+Pmj7uIVNH5QZNVW+z8uw/aNvRfSZU1S+KAhw1bfkPBGHCKD7obqHiwK79KmKQEq12WLQuFXK5IJcQZpq1iNaeHbOtowTiQEc97h2gXwqTiz2anTAEeW7MEBRSge3uLJHuB3pcka0cOlhcXWHrlFv/TAZ1X0AxfvtxsLEN55feShk/EFU5zmSZLCcGW22tnAm65C0PO111XlT7FLYLy14QD6KoxLihIheI8+DKbB6se5p7+rOHD2oNRAoIHNV/kDBzH5wEewWVwqwTC7sHbLILb8gqk6QknRKcHqXds6LtcUOhR9ckBpQ+Rtjf4VpJoPFVO8oHUK/5u/UCvr3W27+3Fm7xndBuORk6I5jnV2PyvnwYsgHwAhVAx7gHuH6F/zIDgZa5uZDTyVjGwC58SCjdpEFwjpCPsjK/FPS1TwIbTPEYGvmIrSz7tHJn70oWeFswbKz/42doww13lc3gUHpXFqAX2Gv1oAhhI4EoFAJnpYKEA16n/tZv0=
   file:
-    - build/travis-fiddle
+    - build/travis-fiddle.$TRAVIS_OS_NAME
   skip_cleanup: true
   on:
     repo: tonyelewis/travis-fiddle
