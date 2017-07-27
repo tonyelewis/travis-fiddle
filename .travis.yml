@@ -19,7 +19,7 @@ env:
  #- BUILDTYPE=DEBUG
  - BUILDTYPE=RELEASE
  #- BUILDTYPE=RELWITHDEBINFO
- # - BUILDTYPE=ASAN           # Address sanitizer
+ - BUILDTYPE=ASAN           # Address sanitizer
  # - BUILDTYPE=UBSAN          # Undefined-behaviour sanitizer
  # - BUILDTYPE=ANALYZE        # Use scan_build, which builds with Clang's static analyzer
 
@@ -33,17 +33,18 @@ matrix:
 
 before_install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ] ; then export BUILD_FILE_SUFFIX=".ubuntu14.04"; else export BUILD_FILE_SUFFIX=".macos" ; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "clang++" ]; then sudo apt-get update  -qq                                  ; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "clang++" ]; then sudo apt-get install -qq libc++-dev libc++1 libc++abi-dev ; fi
+  - if [ "$TRAVIS_OS_NAME  == "osx"  ]; then if [ "$CC" = "gcc" ]; then export CXX=g++-4.8; export CC=gcc-4.8; fi fi # Default gcc on osx is just a front-end for LLVM
 
 install:
+  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "clang++" ]; then sudo apt-get update  -qq                                  ; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "clang++" ]; then sudo apt-get install -qq libc++-dev libc++1 libc++abi-dev ; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "clang++" ]; then export CXX="clang++-4.0" CC="clang-4.0" ; fi
   # - if [ "$CXX"       == "g++"            ]; then export CXX="g++-4.9"     CC="gcc-4.9"   ; fi
-  # - if [ "$CXX"       == "clang++"        ]; then export CXX="clang++-3.6" CC="clang-3.6" ; fi
   - if [ "$CXX"       == "clang++"        ]; then export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -stdlib=libc++ " ; fi
-  - if [ "$BUILDTYPE" == "DEBUG"          ]; then export CMAKE_BUILD_TYPE="DEBUG"         ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                                           ; fi
+  # - if [ "$BUILDTYPE" == "DEBUG"          ]; then export CMAKE_BUILD_TYPE="DEBUG"         ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                                           ; fi
   - if [ "$BUILDTYPE" == "RELEASE"        ]; then export CMAKE_BUILD_TYPE="RELEASE"       ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                                           ; fi
-  - if [ "$BUILDTYPE" == "RELWITHDEBINFO" ]; then export CMAKE_BUILD_TYPE="RELWITHDEBINFO"; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                                           ; fi
-  # - if [ "$BUILDTYPE" == "ASAN"           ]; then export CMAKE_BUILD_TYPE="RELEASE"       ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer"; fi
+  # - if [ "$BUILDTYPE" == "RELWITHDEBINFO" ]; then export CMAKE_BUILD_TYPE="RELWITHDEBINFO"; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                                           ; fi
+  - if [ "$BUILDTYPE" == "ASAN"           ]; then export CMAKE_BUILD_TYPE="RELEASE"       ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer"; fi
   # - if [ "$BUILDTYPE" == "UBSAN"          ]; then export CMAKE_BUILD_TYPE="RELEASE"       ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fsanitize=undefined                      "; fi
   # - if [ "$BUILDTYPE" == "ANALYZE"        ]; then export CMAKE_BUILD_TYPE="RELEASE"       ; export WRAPPER="scan_build-3.6 " ; fi else export WRAPPER=" "                         ; fi
 
@@ -69,14 +70,14 @@ before_script:
   - cmake "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}" "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}" ..
   - cd $TRAVIS_BUILD_DIR
 
-script: make -k -C build && build/travis-fiddle && mv build/travis-fiddle build/travis-fiddle.$TRAVIS_OS_NAME
+script: make -k -C build && build/travis-fiddle && mv build/travis-fiddle build/travis-fiddle.$BUILD_FILE_SUFFIX
 
 deploy:
   provider: releases
   api_key:
     secure: jPE48pkwnNk+AWSKoCCP3KDaUY8oGbxqBwiFhAsB4OmRkQ9FJ5eQBnOR8jb6qoDdKjQh+B/2j21F5rDboUxoHvHfk5JOZPBVrSHwymuv7vf0Om3VUt/sew1MrLRnwH0oapAM5W+7W8yUaqapPw2LlxJOQl2co26DGwlPkqs5OdwI26mPHmEi+Pmj7uIVNH5QZNVW+z8uw/aNvRfSZU1S+KAhw1bfkPBGHCKD7obqHiwK79KmKQEq12WLQuFXK5IJcQZpq1iNaeHbOtowTiQEc97h2gXwqTiz2anTAEeW7MEBRSge3uLJHuB3pcka0cOlhcXWHrlFv/TAZ1X0AxfvtxsLEN55feShk/EFU5zmSZLCcGW22tnAm65C0PO111XlT7FLYLy14QD6KoxLihIheI8+DKbB6se5p7+rOHD2oNRAoIHNV/kDBzH5wEewWVwqwTC7sHbLILb8gqk6QknRKcHqXds6LtcUOhR9ckBpQ+Rtjf4VpJoPFVO8oHUK/5u/UCvr3W27+3Fm7xndBuORk6I5jnV2PyvnwYsgHwAhVAx7gHuH6F/zIDgZa5uZDTyVjGwC58SCjdpEFwjpCPsjK/FPS1TwIbTPEYGvmIrSz7tHJn70oWeFswbKz/42doww13lc3gUHpXFqAX2Gv1oAhhI4EoFAJnpYKEA16n/tZv0=
   file:
-    - build/travis-fiddle.$TRAVIS_OS_NAME
+    - build/travis-fiddle.$BUILD_FILE_SUFFIX
   skip_cleanup: true
   on:
     repo: tonyelewis/travis-fiddle
