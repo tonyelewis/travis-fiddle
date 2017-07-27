@@ -78,6 +78,7 @@ deploy:
     secure: jPE48pkwnNk+AWSKoCCP3KDaUY8oGbxqBwiFhAsB4OmRkQ9FJ5eQBnOR8jb6qoDdKjQh+B/2j21F5rDboUxoHvHfk5JOZPBVrSHwymuv7vf0Om3VUt/sew1MrLRnwH0oapAM5W+7W8yUaqapPw2LlxJOQl2co26DGwlPkqs5OdwI26mPHmEi+Pmj7uIVNH5QZNVW+z8uw/aNvRfSZU1S+KAhw1bfkPBGHCKD7obqHiwK79KmKQEq12WLQuFXK5IJcQZpq1iNaeHbOtowTiQEc97h2gXwqTiz2anTAEeW7MEBRSge3uLJHuB3pcka0cOlhcXWHrlFv/TAZ1X0AxfvtxsLEN55feShk/EFU5zmSZLCcGW22tnAm65C0PO111XlT7FLYLy14QD6KoxLihIheI8+DKbB6se5p7+rOHD2oNRAoIHNV/kDBzH5wEewWVwqwTC7sHbLILb8gqk6QknRKcHqXds6LtcUOhR9ckBpQ+Rtjf4VpJoPFVO8oHUK/5u/UCvr3W27+3Fm7xndBuORk6I5jnV2PyvnwYsgHwAhVAx7gHuH6F/zIDgZa5uZDTyVjGwC58SCjdpEFwjpCPsjK/FPS1TwIbTPEYGvmIrSz7tHJn70oWeFswbKz/42doww13lc3gUHpXFqAX2Gv1oAhhI4EoFAJnpYKEA16n/tZv0=
   file:
     - build/travis-fiddle
+  skip_cleanup: true
   on:
     repo: tonyelewis/travis-fiddle
     tags: true
