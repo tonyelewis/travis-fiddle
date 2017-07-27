@@ -34,7 +34,7 @@ matrix:
 before_install:
   - if [ "$TRAVIS_OS_NAME" == "linux"                         ]; then export BUILD_FILE_SUFFIX=".ubuntu14.04"; else export BUILD_FILE_SUFFIX=".macos"                                                  ; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" =~ ^clang ]; then export CXX="clang++-4.0" CC="clang-4.0"                   ; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" =~ ^g     ];S then export CXX="g++-6"   CC="gcc-6"                                                                                                  ; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" =~ ^g     ]; then export CXX="g++-6"   CC="gcc-6"                                                                                                  ; fi
   - if [ "$TRAVIS_OS_NAME" == "osx"   ] && [ "$CXX" =~ ^g     ]; then export CXX="g++-4.8" CC="gcc-4.8"                                                                                                ; fi # Default gcc on osx is just a front-end for LLVM
   - if [ "$TRAVIS_OS_NAME" == "osx"   ] && [ "$CXX" =~ ^g     ]; then which gcc-4.8                                                                                                                    ; fi # Default gcc on osx is just a front-end for LLVM
   - if [ "$TRAVIS_OS_NAME" == "osx"   ] && [ "$CXX" =~ ^g     ]; then which g++-4.8                                                                                                                    ; fi # Default gcc on osx is just a front-end for LLVM
