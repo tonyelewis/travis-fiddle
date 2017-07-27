@@ -80,3 +80,4 @@ deploy:
     - build/travis-fiddle
   on:
     repo: tonyelewis/travis-fiddle
+    tags: true
