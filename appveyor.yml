@@ -5,6 +5,9 @@ platform:
   - x86
   - x64
 
+build_script:
+  - python build_system/appveyor.helper.py 
+
 configuration:
   - Debug
   - Release
