@@ -33,13 +33,13 @@ matrix:
 
 before_install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ] ; then export BUILD_FILE_SUFFIX=".ubuntu14.04"; else export BUILD_FILE_SUFFIX=".macos" ; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx"   ] && [ "$CXX" = "g++" ]; then export $CXX="g++-4.8" CC="gcc-4.8" ; fi # Default gcc on osx is just a front-end for LLVM
+  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "g++" ]; then export CXX="g++-6"   CC="gcc-6"   ; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx"   ] && [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8" ; fi # Default gcc on osx is just a front-end for LLVM
 
 install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "clang++" ]; then sudo apt-get update  -qq                                  ; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "clang++" ]; then sudo apt-get install -qq libc++-dev libc++1 libc++abi-dev ; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "clang++" ]; then export CXX="clang++-4.0" CC="clang-4.0" ; fi
-  # - if [ "$CXX"       == "g++"            ]; then export CXX="g++-4.9"     CC="gcc-4.9"   ; fi
   - if [ "$CXX"       == "clang++"        ]; then export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -stdlib=libc++ " ; fi
   # - if [ "$BUILDTYPE" == "DEBUG"          ]; then export CMAKE_BUILD_TYPE="DEBUG"         ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                                           ; fi
   - if [ "$BUILDTYPE" == "RELEASE"        ]; then export CMAKE_BUILD_TYPE="RELEASE"       ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                                           ; fi
@@ -55,8 +55,8 @@ addons:
 #     - kalakris-cmake
     - llvm-toolchain-trusty-4.0
     packages:
-    - g++-4.9
-    - gcc-4.9
+    - g++-6
+    - gcc-6
     - clang-4.0
 #     - cmake
 #     - ninja-build
