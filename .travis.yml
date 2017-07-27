@@ -33,20 +33,22 @@ matrix:
 
 before_install:
   - if [ "$TRAVIS_OS_NAME" == "linux"                            ]; then export BUILD_FILE_SUFFIX=".ubuntu14.04"; else export BUILD_FILE_SUFFIX=".macos" ; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "g++"     ]; then export CXX="g++-6"   CC="gcc-6"   ; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx"   ] && [ "$CXX" == "g++"     ]; then export CXX="g++-4.8" CC="gcc-4.8" ; fi # Default gcc on osx is just a front-end for LLVM
-  - if [                                     "$CXX" == "clang++" ]; then export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -stdlib=libc++ " ; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "g++"     ]; then export CXX="g++-6"   CC="gcc-6"                             ; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx"   ] && [ "$CXX" == "g++"     ]; then export CXX="g++-4.8" CC="gcc-4.8"                           ; fi # Default gcc on osx is just a front-end for LLVM
+  - if [ "$TRAVIS_OS_NAME" == "osx"   ] && [ "$CXX" == "g++"     ]; then which gcc-4.8                                               ; fi # Default gcc on osx is just a front-end for LLVM
+  - if [ "$TRAVIS_OS_NAME" == "osx"   ] && [ "$CXX" == "g++"     ]; then which g++-4.8                                               ; fi # Default gcc on osx is just a front-end for LLVM
+  # - if [                                     "$CXX" == "clang++" ]; then export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -stdlib=libc++ " ; fi
 
 install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "clang++" ]; then sudo apt-get update  -qq                                  ; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "clang++" ]; then sudo apt-get install -qq libc++-dev libc++1 libc++abi-dev ; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "clang++" ]; then export CXX="clang++-4.0" CC="clang-4.0" ; fi
-  # - if [ "$BUILDTYPE" == "DEBUG"          ]; then export CMAKE_BUILD_TYPE="DEBUG"         ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                                           ; fi
-  - if [ "$BUILDTYPE" == "RELEASE"        ]; then export CMAKE_BUILD_TYPE="RELEASE"       ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                                           ; fi
-  # - if [ "$BUILDTYPE" == "RELWITHDEBINFO" ]; then export CMAKE_BUILD_TYPE="RELWITHDEBINFO"; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                                           ; fi
-  - if [ "$BUILDTYPE" == "ASAN"           ]; then export CMAKE_BUILD_TYPE="RELEASE"       ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer"; fi
-  # - if [ "$BUILDTYPE" == "UBSAN"          ]; then export CMAKE_BUILD_TYPE="RELEASE"       ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fsanitize=undefined                      "; fi
-  # - if [ "$BUILDTYPE" == "ANALYZE"        ]; then export CMAKE_BUILD_TYPE="RELEASE"       ; export WRAPPER="scan_build-3.6 " ; fi else export WRAPPER=" "                         ; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "clang++" ]; then export CXX="clang++-4.0" CC="clang-4.0"                   ; fi
+  # - if [ "$BUILDTYPE" == "DEBUG"          ]; then export CMAKE_BUILD_TYPE="DEBUG"         ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                                                          ; fi
+  - if [ "$BUILDTYPE" == "RELEASE"        ]; then export CMAKE_BUILD_TYPE="RELEASE"       ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                                                          ; fi
+  # - if [ "$BUILDTYPE" == "RELWITHDEBINFO" ]; then export CMAKE_BUILD_TYPE="RELWITHDEBINFO"; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                                                          ; fi
+  - if [ "$BUILDTYPE" == "ASAN"           ]; then export CMAKE_BUILD_TYPE="RELEASE"       ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fsanitize=address -fuse-ld=gold -fno-omit-frame-pointer" ; fi
+  # - if [ "$BUILDTYPE" == "UBSAN"          ]; then export CMAKE_BUILD_TYPE="RELEASE"       ; export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -fsanitize=undefined -fuse-ld=gold                      " ; fi
+  # - if [ "$BUILDTYPE" == "ANALYZE"        ]; then export CMAKE_BUILD_TYPE="RELEASE"       ; export WRAPPER="scan_build-3.6 " ; fi else export WRAPPER=" "                                        ; fi
 
 addons:
   apt:
@@ -82,3 +84,4 @@ deploy:
   on:
     repo: tonyelewis/travis-fiddle
     tags: true
+    condition: "$BUILDTYPE == RELEASE && $CC =~ ^gcc"
